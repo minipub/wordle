@@ -9,6 +9,8 @@ import (
 func main() {
 	pWord := internal.RandOneWord() // in-plan word
 
+	fmt.Println("A Wordle Game!\nPlease input a five-letter word...\n")
+
 	for i := 0; i < len(internal.CheerWords); {
 		iWord, err := internal.Guess() // inputted word
 		if err != nil {
