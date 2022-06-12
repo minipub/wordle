@@ -5781,8 +5781,12 @@ func RandOneWord() (rs [5]byte) {
 }
 
 func isWord(s string) (yes bool) {
-	for _, w := range words {
-		if w == s {
+	return IsIn(words, s)
+}
+
+func IsIn[T comparable](src []T, findme T) (yes bool) {
+	for _, v := range src {
+		if v == findme {
 			yes = true
 			break
 		}

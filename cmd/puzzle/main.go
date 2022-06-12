@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-
 	"wordle/internal"
 )
 
@@ -20,4 +19,11 @@ func main() {
 
 	ok := internal.Equal(pWord, iWord)
 	fmt.Printf("iWord == pWord: %t\n", ok)
+
+	pos := internal.FindPos(pWord, iWord)
+	for _, j := range pos {
+		// fmt.Printf("j: %d\n", j)
+		fmt.Print(string(internal.Colors[j]), "◼")
+	}
+	fmt.Println()
 }
