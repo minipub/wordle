@@ -8,15 +8,16 @@ import (
 
 func main() {
 	pWord := internal.RandOneWord() // in-plan word
-	// fmt.Printf("word: %s\n", pWord)
 
-	for i := 0; i < len(internal.CheerWords); i++ {
+	for i := 0; i < len(internal.CheerWords); {
 		iWord, err := internal.Guess() // inputted word
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %+v\n", err)
-			os.Exit(1)
+			continue
 		}
 		// fmt.Printf("iWord: %s\n", iWord)
+
+		i++
 
 		ok := internal.Equal(pWord, iWord)
 		if ok {
@@ -27,11 +28,11 @@ func main() {
 
 		pos := internal.FindPos(pWord, iWord)
 		for _, j := range pos {
-			// fmt.Printf("j: %d\n", j)
-			fmt.Print(string(internal.Colors[j]), "◼")
+			fmt.Print(string(internal.Colors[j]), "◼", internal.ColorReset)
 		}
 		fmt.Println()
 	}
 
+	fmt.Printf("\nThe Plan Word is <%s>\n", pWord)
 	fmt.Println("Come on! Take a break & get another round.")
 }

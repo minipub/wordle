@@ -14,6 +14,7 @@ const (
 	appear
 	miss
 
+	ColorReset  = "\033[0m"
 	ColorGreen  = "\033[32m"
 	ColorYellow = "\033[33m"
 	ColorRed    = "\033[31m"
@@ -50,6 +51,11 @@ func Guess() (rs [5]byte, err error) {
 		return
 	}
 
+	if isCRLF(b[n-1]) {
+		err = errors.New("no enough letters")
+		return
+	}
+
 	if len(b[0:n]) < 5 {
 		err = errors.New("no enough letters")
 		return
@@ -63,7 +69,7 @@ func Guess() (rs [5]byte, err error) {
 		} else if v >= 'a' && v <= 'z' {
 			rs[k] = v
 		} else {
-			err = errors.New("no enough letters")
+			err = errors.New("letters must be between a-zA-z")
 			return
 		}
 	}

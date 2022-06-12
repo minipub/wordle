@@ -5784,6 +5784,10 @@ func isWord(s string) (yes bool) {
 	return IsIn(words, s)
 }
 
+func isCRLF(b byte) bool {
+	return IsIn([]byte{'\r', '\n'}, b)
+}
+
 func IsIn[T comparable](src []T, findme T) (yes bool) {
 	for _, v := range src {
 		if v == findme {
