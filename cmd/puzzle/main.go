@@ -1,3 +1,4 @@
+// Wordle! Puzzle
 package main
 
 import (
