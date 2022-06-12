@@ -19,13 +19,25 @@ const (
 	ColorRed    = "\033[31m"
 )
 
-var Colors map[int]string
+var (
+	Colors     map[int]string
+	CheerWords map[int]string
+)
 
 func init() {
 	Colors = map[int]string{
 		hit:    ColorGreen,
 		appear: ColorYellow,
 		miss:   ColorRed,
+	}
+
+	CheerWords = map[int]string{
+		0: "God Like!!!!",
+		1: "Holy Shit!!!",
+		2: "Splendid!!",
+		3: "Great Job!",
+		4: "Well Done",
+		5: "Not Bad",
 	}
 }
 
