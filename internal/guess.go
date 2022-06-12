@@ -42,7 +42,7 @@ func init() {
 	}
 }
 
-func Guess() (rs [5]byte, err error) {
+func InputWord() (rs [5]byte, err error) {
 	r := bufio.NewReader(os.Stdin)
 
 	var b [5]byte
@@ -93,6 +93,7 @@ func Equal(x, y [5]byte) bool {
 // FindPos Implement finding inputted word position one-by-one char through in-plan word
 // x: in-plan word
 // y: inputted word
+// pos: status position at inputted word
 func FindPos(x, y [5]byte) (pos [5]int) {
 	// map store x's char & positons
 	xps := make(map[byte][]int)
