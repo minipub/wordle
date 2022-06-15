@@ -16,7 +16,21 @@ Please input a five-letter word and Press <Enter> to confirm.
 
 `)
 
+	// handle different reader
+	// ln, err := net.Listen("tcp", ":8080")
+	// if err != nil {
+	// 	// handle error
+	// }
+	// for {
+	// 	conn, err := ln.Accept()
+	// 	if err != nil {
+	// 		// handle error
+	// 	}
+	// 	go handleConnection(conn)
+	// }
+
 	for i := 0; i < len(internal.CheerWords); {
+		// handle different writer
 		fmt.Print("input: ")
 		iWord, err := internal.InputWord() // inputted word
 		if err != nil {
