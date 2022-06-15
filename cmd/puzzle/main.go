@@ -10,7 +10,11 @@ import (
 func main() {
 	pWord := internal.RandOneWord() // in-plan word
 
-	fmt.Println("A Wordle Game!\nPlease input a five-letter word and Press <Enter> to confirm.\n")
+	fmt.Print(`A Wordle Game!
+
+Please input a five-letter word and Press <Enter> to confirm.
+
+`)
 
 	for i := 0; i < len(internal.CheerWords); {
 		fmt.Print("input: ")
@@ -22,8 +26,7 @@ func main() {
 
 		ok := internal.Equal(pWord, iWord)
 		if ok {
-			fmt.Println()
-			fmt.Println(internal.CheerWords[i])
+			fmt.Printf("\n%s\n", internal.CheerWords[i])
 			os.Exit(0)
 		}
 
@@ -36,7 +39,11 @@ func main() {
 		i++
 	}
 
-	fmt.Println("\nOut of Chance!")
-	fmt.Printf("\nThe Word is <%s>\n", pWord)
-	fmt.Println("\nTake a break or get another round.")
+	fmt.Printf(`
+Out of Chance!
+
+The Word is <%s>
+
+Take a break or get another round.
+`, pWord)
 }
