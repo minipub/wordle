@@ -42,6 +42,45 @@ func init() {
 	}
 }
 
+func HandleInput(rw ReadWriter) (rs [5]byte, err error) {
+	var b [5]byte
+	n, err := rw.Read(b[:])
+	if err != nil {
+		return
+	}
+
+	if isCRLF(b[n-1]) {
+		err = errors.New("no enough letters")
+		return
+	}
+
+	if len(b[0:n]) < 5 {
+		err = errors.New("no enough letters")
+		return
+	}
+
+	// fmt.Printf("s: %s", b[0:n])
+
+	for k, v := range b[0:n] {
+		if v >= 'A' && v <= 'Z' {
+			rs[k] = v + 32
+		} else if v >= 'a' && v <= 'z' {
+			rs[k] = v
+		} else {
+			err = errors.New("letters must be between a-zA-z")
+			return
+		}
+	}
+
+	s := string(rs[:])
+	if !isWord(s) {
+		err = fmt.Errorf("<%s> not a word", s)
+		return
+	}
+
+	return
+}
+
 func InputWord() (rs [5]byte, err error) {
 	r := bufio.NewReader(os.Stdin)
 
