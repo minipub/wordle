@@ -71,16 +71,26 @@ func main() {
 			}
 
 			// fmt.Printf("pos: %+v\n", pos)
+
+			if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
+				// TODO chosen word
+				internal.ChooseWord(pos[:5], b[:])
+
+				iWord := "great"
+				// print client request
+				fmt.Println(iWord)
+				w.Write([]byte(iWord))
+			}
 		}
 
 		time.Sleep(time.Second)
 
 		if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
 			// TODO chosen word
-			word := "great"
+			iWord := "great"
 			// print client request
-			fmt.Println(word)
-			w.Write([]byte(word))
+			fmt.Println(iWord)
+			w.Write([]byte(iWord))
 		}
 	}
 
