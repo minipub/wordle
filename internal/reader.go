@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"bufio"
 	"io"
 )
 
@@ -9,24 +8,34 @@ type Reader interface {
 	Read([]byte) (int, error)
 }
 
-func read(conn io.Reader, b []byte) (n int, err error) {
-	r := bufio.NewReader(conn)
-	n, err = r.Read(b[:])
-	return
-}
-
 type StdReader struct {
 	io.Reader
+	f func()
 }
 
 func (s *StdReader) Read(b []byte) (n int, err error) {
-	return read(s.Reader, b)
+	n, err = s.Reader.Read(b[:])
+	defer s.f()
+	return
 }
 
-type BotReader struct {
-	io.Reader
-}
+// func read(r io.Reader, b []byte) (n int, err error) {
+// 	n, err = r.Read(b[:])
+// 	return
+// }
 
-func (s *BotReader) Read(b []byte) (n int, err error) {
-	return read(s.Reader, b)
-}
+// type StdReader struct {
+// 	io.Reader
+// }
+
+// func (s *StdReader) Read(b []byte) (n int, err error) {
+// 	return read(s.Reader, b)
+// }
+
+// type BotReader struct {
+// 	io.Reader
+// }
+
+// func (s *BotReader) Read(b []byte) (n int, err error) {
+// 	return read(s.Reader, b)
+// }

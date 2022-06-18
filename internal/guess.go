@@ -1,10 +1,8 @@
 package internal
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
-	"os"
 )
 
 const (
@@ -42,6 +40,63 @@ func init() {
 	}
 }
 
+func DoPuzzle(rw ReadWriter) {
+	pWord := RandOneWord() // in-plan word
+	PreWord(rw)
+	i := GuessWord(rw, pWord)
+	PostWord(rw, i, pWord)
+}
+
+func GuessWord(rw ReadWriter, pWord [5]byte) (cnt int) {
+	cnt = -1
+	for i := 0; i < len(CheerWords); {
+		// handle different writer
+		rw.Write("input: ")
+		iWord, err := HandleInput(rw) // inputted word
+		if err != nil {
+			rw.Write(fmt.Sprintf("Error: %+v\n", err))
+			continue
+		}
+
+		ok := Equal(pWord, iWord)
+		if ok {
+			cnt = i
+			return
+		}
+
+		pos := FindPos(pWord, iWord)
+		for m, n := range pos {
+			rw.Write(fmt.Sprint(Colors[n], string(iWord[m]), ColorReset))
+		}
+		rw.Write("\n")
+
+		i++
+	}
+	return
+}
+
+func PreWord(rw ReadWriter) {
+	rw.Write(`A Wordle Game!
+
+Please input a five-letter word and Press <Enter> to confirm.
+
+`)
+}
+
+func PostWord(rw ReadWriter, i int, pWord [5]byte) {
+	if i > -1 {
+		rw.Write(fmt.Sprintf("\n%s\n", CheerWords[i]))
+	} else {
+		rw.Write(fmt.Sprintf(`
+Out of Chance!
+
+The Word is <%s>
+
+Take a break or get another round.
+`, pWord))
+	}
+}
+
 func HandleInput(rw ReadWriter) (rs [5]byte, err error) {
 	var b [5]byte
 	n, err := rw.Read(b[:])
@@ -49,46 +104,7 @@ func HandleInput(rw ReadWriter) (rs [5]byte, err error) {
 		return
 	}
 
-	if isCRLF(b[n-1]) {
-		err = errors.New("no enough letters")
-		return
-	}
-
-	if len(b[0:n]) < 5 {
-		err = errors.New("no enough letters")
-		return
-	}
-
-	// fmt.Printf("s: %s", b[0:n])
-
-	for k, v := range b[0:n] {
-		if v >= 'A' && v <= 'Z' {
-			rs[k] = v + 32
-		} else if v >= 'a' && v <= 'z' {
-			rs[k] = v
-		} else {
-			err = errors.New("letters must be between a-zA-z")
-			return
-		}
-	}
-
-	s := string(rs[:])
-	if !isWord(s) {
-		err = fmt.Errorf("<%s> not a word", s)
-		return
-	}
-
-	return
-}
-
-func InputWord() (rs [5]byte, err error) {
-	r := bufio.NewReader(os.Stdin)
-
-	var b [5]byte
-	n, err := r.Read(b[:])
-	if err != nil {
-		return
-	}
+	// fmt.Printf("b read: %+v\n", b[:])
 
 	if isCRLF(b[n-1]) {
 		err = errors.New("no enough letters")

@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	"net"
+	"io"
 )
 
 type Writer interface {
@@ -12,20 +12,20 @@ type Writer interface {
 type StdWriter struct {
 }
 
-func (StdWriter) Write(s string) {
+func (*StdWriter) Write(s string) {
 	fmt.Print(s)
 }
 
 type BotWriter struct {
-	conn net.Conn
+	w io.Writer
 }
 
-func NewBotWriter(conn net.Conn) BotWriter {
+func NewBotWriter(w io.Writer) BotWriter {
 	return BotWriter{
-		conn,
+		w,
 	}
 }
 
 func (b *BotWriter) Write(s string) {
-	b.conn.Write([]byte(s))
+	b.w.Write([]byte(s))
 }
