@@ -7,15 +7,26 @@ import (
 
 const (
 	// status positon of inputted char at in-plan word
-	// hit: green, appear: yellow, miss: gray
-	hit = iota
-	appear
-	miss
+	// Hit: green, Appear: yellow, Miss: gray
+	Hit = iota
+	Appear
+	Miss
 
 	ColorReset  = "\033[0m"
 	ColorGreen  = "\033[32m"
 	ColorYellow = "\033[33m"
 	ColorRed    = "\033[31m"
+
+	ColoredByteNum    = len(ColorRed)
+	ColorResetByteNum = len(ColorReset)
+
+	Prompt = "input: "
+
+	PreText = `A Wordle Game!
+
+Please input a five-letter word and Press <Enter> to confirm.
+
+`
 )
 
 var (
@@ -25,9 +36,9 @@ var (
 
 func init() {
 	Colors = map[int]string{
-		hit:    ColorGreen,
-		appear: ColorYellow,
-		miss:   ColorRed,
+		Hit:    ColorGreen,
+		Appear: ColorYellow,
+		Miss:   ColorRed,
 	}
 
 	CheerWords = map[int]string{
@@ -51,7 +62,7 @@ func GuessWord(rw ReadWriter, pWord [5]byte) (cnt int) {
 	cnt = -1
 	for i := 0; i < len(CheerWords); {
 		// handle different writer
-		rw.Write("input: ")
+		rw.Write(Prompt)
 		iWord, err := HandleInput(rw) // inputted word
 		if err != nil {
 			rw.Write(fmt.Sprintf("Error: %+v\n", err))
@@ -65,10 +76,11 @@ func GuessWord(rw ReadWriter, pWord [5]byte) (cnt int) {
 		}
 
 		pos := FindPos(pWord, iWord)
+		var s string
 		for m, n := range pos {
-			rw.Write(fmt.Sprint(Colors[n], string(iWord[m]), ColorReset))
+			s += fmt.Sprint(Colors[n], string(iWord[m]), ColorReset)
 		}
-		rw.Write("\n")
+		rw.Write(fmt.Sprintln(s))
 
 		i++
 	}
@@ -76,11 +88,7 @@ func GuessWord(rw ReadWriter, pWord [5]byte) (cnt int) {
 }
 
 func PreWord(rw ReadWriter) {
-	rw.Write(`A Wordle Game!
-
-Please input a five-letter word and Press <Enter> to confirm.
-
-`)
+	rw.Write(PreText)
 }
 
 func PostWord(rw ReadWriter, i int, pWord [5]byte) {
@@ -158,12 +166,12 @@ func FindPos(x, y [5]byte) (pos [5]int) {
 
 	for k, v := range y {
 		if _, ok := xps[v]; !ok || len(xps[v]) == 0 {
-			pos[k] = miss
+			pos[k] = Miss
 		} else {
 			if IsIn(xps[v], k) {
-				pos[k] = hit
+				pos[k] = Hit
 			} else {
-				pos[k] = appear
+				pos[k] = Appear
 			}
 		}
 	}

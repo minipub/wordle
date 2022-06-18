@@ -17,7 +17,7 @@ func main() {
 
 	var rw internal.ReadWriter
 
-	if isBot {
+	if !isBot {
 
 		ln, err := net.Listen("tcp", port)
 		if err != nil {
