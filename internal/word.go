@@ -5765,13 +5765,13 @@ var words = []string{
 	"zowie",
 }
 
-func RandOneWord() (rs [5]byte) {
+func RandOneWord(ws []string) (rs [5]byte) {
 	rand.Seed(time.Now().UnixNano())
 
-	cnt := len(words)
+	cnt := len(ws)
 	i := rand.Intn(cnt)
 
-	w := words[i]
+	w := ws[i]
 
 	for k, v := range w {
 		rs[k] = byte(v)

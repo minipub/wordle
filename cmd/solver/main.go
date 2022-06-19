@@ -20,8 +20,11 @@ func main() {
 
 	r := bufio.NewReader(conn)
 	w := bufio.NewWriterSize(conn, 1)
+
+	var iWord [5]byte // only words
+
 	for {
-		var b [512]byte
+		var b [512]byte // colored text words
 		n, err := r.Read(b[:])
 		if err != nil {
 			os.Exit(2)
@@ -41,22 +44,24 @@ func main() {
 			bytes.HasPrefix(b[0:n], []byte(internal.ColorGreen)) {
 
 			var vs []byte
-			var pos []int
-			for i, j := 0, 0; ; {
+			var pos [5]int
+			for i, j, k := 0, 0, 0; ; {
 				v := b[0:n][i]
 
 				if j > 0 && j%internal.ColoredByteNum == 0 {
 					// fmt.Printf("vs: %+v\n", vs)
 
 					if bytes.HasPrefix(vs, []byte(internal.ColorRed)) {
-						pos = append(pos, internal.Miss)
+						pos[k] = internal.Miss
 					} else if bytes.HasPrefix(vs, []byte(internal.ColorYellow)) {
-						pos = append(pos, internal.Appear)
+						pos[k] = internal.Appear
 					} else if bytes.HasPrefix(vs, []byte(internal.ColorGreen)) {
-						pos = append(pos, internal.Hit)
+						pos[k] = internal.Hit
 					}
+					k++
 
-					if len(pos) == 5 {
+					// if len(pos) == 5 {
+					if k == 5 {
 						break
 					} else {
 						vs = make([]byte, 0)
@@ -73,25 +78,20 @@ func main() {
 			// fmt.Printf("pos: %+v\n", pos)
 
 			if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
-				// TODO chosen word
-				internal.ChooseWord(pos[:5], b[:])
-
-				iWord := "great"
+				// solve word
+				iWord = internal.SolveWord(pos, iWord)
 				// print client request
-				fmt.Println(iWord)
-				w.Write([]byte(iWord))
+				fmt.Printf("%s\n", iWord)
+				w.Write(iWord[:])
 			}
-		}
-
-		time.Sleep(time.Second)
-
-		if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
-			// TODO chosen word
-			iWord := "great"
+		} else if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
+			time.Sleep(time.Second)
+			copy(iWord[:], "great")
 			// print client request
-			fmt.Println(iWord)
-			w.Write([]byte(iWord))
+			fmt.Printf("%s\n", iWord)
+			w.Write(iWord[:])
 		}
+
 	}
 
 }

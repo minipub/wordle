@@ -52,7 +52,7 @@ func init() {
 }
 
 func DoPuzzle(rw ReadWriter) {
-	pWord := RandOneWord() // in-plan word
+	pWord := RandOneWord(words) // in-plan word
 	PreWord(rw)
 	i := GuessWord(rw, pWord)
 	PostWord(rw, i, pWord)

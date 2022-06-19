@@ -2,6 +2,7 @@ package internal
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -15,16 +16,19 @@ var (
 	missLetters   = []string{}
 
 	// store iWord char eg. pos => char
-	hitIpc    = map[int]chars{}
-	appearIpc = map[int]chars{}
-	missIpc   = map[int]chars{}
+	hitIpc    = make(map[int]chars)
+	appearIpc = make(map[int]chars)
+	missIpc   = make(map[int]chars)
 
 	lastWords = words
 	nowWords  = []string{}
 )
 
 // cat /tmp/words.txt | grep -v "[aplehi]" | grep t | grep n | grep s | grep "^[^t]\w\w[^n][^s]$"
-func ChooseWord(pos [5]int, iWord [5]byte) {
+func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
+	// fmt.Printf("pos: {{ %+v }}\n", pos)
+	// fmt.Printf("iWord: {{ %+v }}\n", iWord)
+
 	for k, v := range iWord {
 		w := string(v)
 
@@ -47,8 +51,14 @@ func ChooseWord(pos [5]int, iWord [5]byte) {
 		}
 	}
 
+	// fmt.Printf("hitLetters: {{ %+v }}\n", hitLetters)
+	// fmt.Printf("appearLetters: {{ %+v }}\n", appearLetters)
+	// fmt.Printf("missLetters: {{ %+v }}\n", missLetters)
+
 	// not pattern
 	notPattern := fmt.Sprintf("[%s]", strings.Join(missLetters, ""))
+
+	// fmt.Printf("notPattern: {{ %+v }}\n", notPattern)
 
 	// position pattern
 	var posPattern string
@@ -71,6 +81,25 @@ func ChooseWord(pos [5]int, iWord [5]byte) {
 
 	sillyFilter(notPattern, posPattern)
 
+	var candiWords string
+	for _, v := range nowWords {
+		candiWords += fmt.Sprintln(v)
+	}
+	fmt.Fprintf(os.Stderr, `candiWords: %s
+
+`, candiWords)
+
+	rs = ChooseWord()
+
+	// at the end
+	reset()
+
+	return
+}
+
+func reset() {
+	lastWords = nowWords
+	nowWords = []string{}
 }
 
 func sillyFilter(notPattern, posPattern string) {
@@ -102,4 +131,32 @@ func sillyFilter(notPattern, posPattern string) {
 		}
 	}
 
+}
+
+// choose word
+func ChooseWord() (w [5]byte) {
+	// layer step down internal mutually exclusive
+	layerDownMutexWords := make(map[int][]string)
+	for i := 1; i <= 5; i++ {
+		layerDownMutexWords[i] = []string{}
+	}
+
+	for _, v := range nowWords {
+		m := make(map[byte][]int)
+		for i, b := range []byte(v) {
+			m[b] = append(m[b], i)
+		}
+
+		mcnt := len(m)
+		layerDownMutexWords[mcnt] = append(layerDownMutexWords[mcnt], v)
+	}
+
+	for i := 5; i > 0; i-- {
+		if len(layerDownMutexWords[i]) > 0 {
+			w = RandOneWord(layerDownMutexWords[i])
+			return
+		}
+	}
+
+	return
 }
