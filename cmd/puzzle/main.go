@@ -7,7 +7,7 @@ import (
 	"net"
 	"os"
 
-	"wordle/internal"
+	"github.com/minipub/wordle/internal"
 )
 
 func main() {

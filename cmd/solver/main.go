@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"wordle/internal"
+	"github.com/minipub/wordle/internal"
 )
 
 func main() {

@@ -22,7 +22,13 @@ const (
 
 	Prompt = "input: "
 
-	PreText = `A Wordle Game!
+	PreText = `
+ _       __               ____        __
+| |     / /___  _________/ / /__     / /
+| | /| / / __ \/ ___/ __  / / _ \   / /
+| |/ |/ / /_/ / /  / /_/ / /  __/  /_/
+|__/|__/\____/_/   \__,_/_/\___/  (_)
+
 
 Please input a five-letter word and Press <Enter> to confirm.
 
@@ -53,6 +59,7 @@ func init() {
 
 func DoPuzzle(rw ReadWriter) {
 	pWord := RandOneWord(words) // in-plan word
+	// fmt.Printf("pWord: %s\n", pWord)
 	PreWord(rw)
 	i := GuessWord(rw, pWord)
 	PostWord(rw, i, pWord)
