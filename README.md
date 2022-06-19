@@ -2,7 +2,7 @@
 
 A Wordle Game.
 
-### Features
+## Features
 
 1. `wordle-puzzle` support classic inactive shell mode
 
@@ -10,22 +10,30 @@ A Wordle Game.
 
 3. `wordle-solver` support solving puzzle automatically (Todo)
 
-### Installation
+## Installation
 
-##### From Source
+### Binaries
 
-If you already have the Go SDK installed, you can use the go tool to install wordle-puzzle:
+Download the binary from the [releases](https://github.com/minipub/wordle/releases) page.
+
+### From Source
+
+##### Requirements
+
+* Go1.18+
+
+If you already have the Go1.18 SDK installed, you can use the go tool to install wordle-puzzle:
 
 `go install github.com/minipub/wordle/cmd/wordle-puzzle@latest`
 
-### Usage
+## Usage
 
-##### C-S Mode
+### C-S Mode
 
 Run server
 
 ```
-puzzle
+wordle-puzzle
 ```
 
 Run client
