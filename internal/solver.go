@@ -26,8 +26,8 @@ var (
 
 // cat /tmp/words.txt | grep -v "[aplehi]" | grep t | grep n | grep s | grep "^[^t]\w\w[^n][^s]$"
 func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
-	// fmt.Printf("pos: {{ %+v }}\n", pos)
-	// fmt.Printf("iWord: {{ %+v }}\n", iWord)
+	fmt.Fprintf(os.Stderr, "pos: {{ %+v }}\n", pos)
+	fmt.Fprintf(os.Stderr, "iWord: {{ %+v }}\n", iWord)
 
 	for k, v := range iWord {
 		w := string(v)
@@ -51,14 +51,12 @@ func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
 		}
 	}
 
-	// fmt.Printf("hitLetters: {{ %+v }}\n", hitLetters)
-	// fmt.Printf("appearLetters: {{ %+v }}\n", appearLetters)
-	// fmt.Printf("missLetters: {{ %+v }}\n", missLetters)
+	fmt.Fprintf(os.Stderr, "hitLetters: {{ %+v }}\n", hitLetters)
+	fmt.Fprintf(os.Stderr, "appearLetters: {{ %+v }}\n", appearLetters)
+	fmt.Fprintf(os.Stderr, "missLetters: {{ %+v }}\n", missLetters)
 
 	// not pattern
 	notPattern := fmt.Sprintf("[%s]", strings.Join(missLetters, ""))
-
-	// fmt.Printf("notPattern: {{ %+v }}\n", notPattern)
 
 	// position pattern
 	var posPattern string
@@ -81,15 +79,20 @@ func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
 
 	sillyFilter(notPattern, posPattern)
 
+	fmt.Fprintf(os.Stderr, "notPattern: {{ %s }}\n", notPattern)
+	fmt.Fprintf(os.Stderr, "posPattern: {{ %s }}\n", posPattern)
+
 	var candiWords string
 	for _, v := range nowWords {
 		candiWords += fmt.Sprintln(v)
 	}
-	fmt.Fprintf(os.Stderr, `candiWords: %s
+	fmt.Fprintf(os.Stderr, `candiWords: 
+%s
 
 `, candiWords)
 
 	rs = ChooseWord()
+	fmt.Fprintf(os.Stderr, "chosen word: {{ %+v }}\n", rs)
 
 	// at the end
 	reset()
@@ -112,16 +115,18 @@ func sillyFilter(notPattern, posPattern string) {
 		}
 
 		// discard those not in hited & appeared letters
+		isExist := true
+
 		for _, m := range hitLetters {
-			if !IsIn([]byte(v), []byte(m)[0]) {
-				continue
-			}
+			isExist = isExist && IsIn([]byte(v), []byte(m)[0])
 		}
 
 		for _, m := range appearLetters {
-			if !IsIn([]byte(v), []byte(m)[0]) {
-				continue
-			}
+			isExist = isExist && IsIn([]byte(v), []byte(m)[0])
+		}
+
+		if !isExist {
+			continue
 		}
 
 		// save words which matched char position
