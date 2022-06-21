@@ -22,6 +22,8 @@ const (
 
 	Prompt = "input: "
 
+	ByeText = "Bye!"
+
 	PreText = `
  _       __               ____        __
 | |     / /___  _________/ / /__     / /
@@ -100,7 +102,10 @@ func PreWord(rw ReadWriter) {
 
 func PostWord(rw ReadWriter, i int, pWord [5]byte) {
 	if i > -1 {
-		rw.Write(fmt.Sprintf("\n%s\n", CheerWords[i]))
+		rw.Write(fmt.Sprintf(`
+%s
+
+`, CheerWords[i]))
 	} else {
 		rw.Write(fmt.Sprintf(`
 Out of Chance!
@@ -108,8 +113,10 @@ Out of Chance!
 The Word is <%s>
 
 Take a break or get another round.
+
 `, pWord))
 	}
+	rw.Write(ByeText)
 }
 
 func HandleInput(rw ReadWriter) (rs [5]byte, err error) {

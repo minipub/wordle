@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"time"
@@ -18,31 +19,30 @@ func main() {
 		os.Exit(1)
 	}
 
-	r := bufio.NewReader(conn)
+	r := bufio.NewReaderSize(conn, 1)
 	w := bufio.NewWriterSize(conn, 1)
 
 	var iWord [5]byte // only words
+	copy(iWord[:], "great")
 
 	for {
-		var b [512]byte // colored text words
-		n, err := r.Read(b[:])
-		if err != nil {
-			os.Exit(2)
-		}
-
-		fmt.Fprintf(os.Stderr, "resp b: {{ %+v }}, {{ %s }}\n", b[0:n], b[0:n])
+		rs := readLoop(r, func() {
+			r.Reset(conn)
+		})
 
 		// print server response
-		fmt.Printf("%s", b[0:n])
+		// fmt.Printf("{{ %s }}", rs)
+		fmt.Printf("%s", rs)
 
-		if bytes.HasPrefix(b[0:n], []byte(internal.ColorRed)) ||
-			bytes.HasPrefix(b[0:n], []byte(internal.ColorYellow)) ||
-			bytes.HasPrefix(b[0:n], []byte(internal.ColorGreen)) {
+		if IsTheEnd(rs) {
+			break
+		}
 
+		var pos [5]int
+		if !IsTheStart(rs) {
 			var vs []byte
-			var pos [5]int
 			for i, j, k := 0, 0, 0; ; {
-				v := b[0:n][i]
+				v := rs[i]
 
 				if j > 0 && j%internal.ColoredByteNum == 0 {
 					// fmt.Printf("vs: %+v\n", vs)
@@ -70,26 +70,90 @@ func main() {
 					j++
 				}
 			}
+		}
 
-			// fmt.Printf("pos: %+v\n", pos)
+		// fmt.Printf("pos: %+v\n", pos)
 
-			if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
-				fmt.Fprintln(os.Stderr, "The second guess")
-				// solve word
-				iWord = internal.SolveWord(pos, iWord)
-				// print client request
-				fmt.Printf("%s\n", iWord)
-				w.Write(iWord[:])
-			}
-		} else if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
-			fmt.Fprintln(os.Stderr, "The first guess")
+		if bytes.HasSuffix(rs, []byte(internal.Prompt)) {
+			// fmt.Fprintln(os.Stderr, "The second guess")
 			time.Sleep(time.Second)
-			copy(iWord[:], "great")
+			// solve word
+			if !IsTheStart(rs) {
+				iWord = internal.SolveWord(pos, iWord)
+			}
 			// print client request
 			fmt.Printf("%s\n", iWord)
 			w.Write(iWord[:])
 		}
 
+		// fmt.Println("1111111111")
+
 	}
 
+}
+
+func IsTheStart(b []byte) bool {
+	return bytes.HasPrefix(b, []byte(internal.PreText))
+}
+
+func IsTheEnd(b []byte) bool {
+	return bytes.HasSuffix(b, []byte(internal.ByeText))
+}
+
+// read next input or the end
+func readLoop(r io.Reader, f func()) (rs []byte) {
+	var keepRead bool
+	var n int
+	var err error
+	var b [512]byte
+
+	defer f()
+
+	for {
+		if keepRead {
+			fmt.Printf("keepRead: %t\n", keepRead)
+			n, err = r.Read(b[n:])
+		} else {
+			n, err = r.Read(b[:])
+		}
+		if err != nil {
+			fmt.Printf("readLoop err: %+v\n", err)
+			os.Exit(2)
+		}
+
+		rs = b[0:n]
+		fmt.Fprintf(os.Stderr, "resp b: {{ %+v }}, {{ %s }}\n", rs, rs)
+
+		if IsTheEnd(rs) {
+			break
+		} else if !bytes.HasSuffix(rs, []byte(internal.Prompt)) {
+			// continue to read if Prompt not direct after PreText or Colored Response
+			fmt.Fprintln(os.Stderr, "Prompt not afterwards!")
+			keepRead = true
+			continue
+		} else {
+			break
+		}
+		// fmt.Println("2222222222")
+
+		// if IsTheEnd(rs) {
+		// 	break
+		// } else if IsTheStart(rs) ||
+		// 	bytes.HasPrefix(rs, []byte(internal.ColorRed)) ||
+		// 	bytes.HasPrefix(rs, []byte(internal.ColorYellow)) ||
+		// 	bytes.HasPrefix(rs, []byte(internal.ColorGreen)) {
+
+		// 	// continue to read if Prompt not direct after PreText or Colored Response
+		// 	if !bytes.HasSuffix(rs, []byte(internal.Prompt)) {
+		// 		fmt.Fprintln(os.Stderr, "Prompt not afterwards!")
+		// 		keepRead = true
+		// 		continue
+		// 	} else {
+		// 		break
+		// 	}
+		// }
+		// // fmt.Println("2222222222")
+	}
+
+	return
 }
