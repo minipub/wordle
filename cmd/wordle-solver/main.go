@@ -30,14 +30,10 @@ func main() {
 			os.Exit(2)
 		}
 
-		// fmt.Printf("bbbb: %+v, %s\n", b[0:n], b[0:n])
+		fmt.Fprintf(os.Stderr, "resp b: {{ %+v }}, {{ %s }}\n", b[0:n], b[0:n])
 
-		// s := string(b[0:n])
 		// print server response
 		fmt.Printf("%s", b[0:n])
-		// fmt.Printf("resp: {{{ %s }}}", b[0:n])
-
-		// if !bytes.HasPrefix(b[0:n], []byte(internal.PreText)) {
 
 		if bytes.HasPrefix(b[0:n], []byte(internal.ColorRed)) ||
 			bytes.HasPrefix(b[0:n], []byte(internal.ColorYellow)) ||
@@ -78,6 +74,7 @@ func main() {
 			// fmt.Printf("pos: %+v\n", pos)
 
 			if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
+				fmt.Fprintln(os.Stderr, "The second guess")
 				// solve word
 				iWord = internal.SolveWord(pos, iWord)
 				// print client request
@@ -85,6 +82,7 @@ func main() {
 				w.Write(iWord[:])
 			}
 		} else if bytes.HasSuffix(b[0:n], []byte(internal.Prompt)) {
+			fmt.Fprintln(os.Stderr, "The first guess")
 			time.Sleep(time.Second)
 			copy(iWord[:], "great")
 			// print client request
