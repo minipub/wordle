@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Compile & Tag & Release
+## Auto Build & Tag & Release
 
 if [ $# -ne 1 ]
 then
