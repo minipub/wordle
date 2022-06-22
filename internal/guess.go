@@ -59,19 +59,20 @@ func init() {
 	}
 }
 
-func DoPuzzle(rw ReadWriter) {
+func DoPuzzle(rw ReadWriter, f func()) {
 	pWord := RandOneWord(words) // in-plan word
 	fmt.Printf("pWord: %s\n", pWord)
 	PreWord(rw)
-	i := GuessWord(rw, pWord)
-	PostWord(rw, i, pWord)
+	i := GuessWord(rw, pWord, f)
+	PostWord(rw, i, pWord, f)
 }
 
-func GuessWord(rw ReadWriter, pWord [5]byte) (cnt int) {
+func GuessWord(rw ReadWriter, pWord [5]byte, f func()) (cnt int) {
 	cnt = -1
 	for i := 0; i < len(CheerWords); {
 		// handle different writer
 		rw.Write(Prompt)
+		f()
 		iWord, err := HandleInput(rw) // inputted word
 		if err != nil {
 			rw.Write(fmt.Sprintf("Error: %+v\n", err))
@@ -100,7 +101,8 @@ func PreWord(rw ReadWriter) {
 	rw.Write(PreText)
 }
 
-func PostWord(rw ReadWriter, i int, pWord [5]byte) {
+func PostWord(rw ReadWriter, i int, pWord [5]byte, f func()) {
+	defer f()
 	if i > -1 {
 		rw.Write(fmt.Sprintf(`
 %s

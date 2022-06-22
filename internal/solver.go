@@ -87,12 +87,12 @@ func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
 		candiWords += fmt.Sprintln(v)
 	}
 	fmt.Fprintf(os.Stderr, `candiWords: 
-%s
-
-`, candiWords)
+%s`, candiWords)
 
 	rs = ChooseWord()
-	fmt.Fprintf(os.Stderr, "chosen word: {{ %+v }}\n", rs)
+	fmt.Fprintf(os.Stderr, `chosen word: {{ %+v }}
+
+`, rs)
 
 	// at the end
 	reset()

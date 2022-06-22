@@ -31,7 +31,6 @@ func main() {
 		})
 
 		// print server response
-		// fmt.Printf("{{ %s }}", rs)
 		fmt.Printf("%s", rs)
 
 		if IsTheEnd(rs) {
@@ -40,6 +39,8 @@ func main() {
 
 		var pos [5]int
 		if !IsTheStart(rs) {
+			fmt.Fprintf(os.Stderr, `Thinking...
+`)
 			var vs []byte
 			for i, j, k := 0, 0, 0; ; {
 				v := rs[i]
@@ -56,7 +57,6 @@ func main() {
 					}
 					k++
 
-					// if len(pos) == 5 {
 					if k == 5 {
 						break
 					} else {
@@ -75,18 +75,15 @@ func main() {
 		// fmt.Printf("pos: %+v\n", pos)
 
 		if bytes.HasSuffix(rs, []byte(internal.Prompt)) {
-			// fmt.Fprintln(os.Stderr, "The second guess")
 			time.Sleep(time.Second)
-			// solve word
 			if !IsTheStart(rs) {
+				// solve word from 2nd times
 				iWord = internal.SolveWord(pos, iWord)
 			}
 			// print client request
 			fmt.Printf("%s\n", iWord)
 			w.Write(iWord[:])
 		}
-
-		// fmt.Println("1111111111")
 
 	}
 
@@ -111,7 +108,7 @@ func readLoop(r io.Reader, f func()) (rs []byte) {
 
 	for {
 		if keepRead {
-			fmt.Printf("keepRead: %t\n", keepRead)
+			// fmt.Fprintf(os.Stderr, "keepRead: %t\n", keepRead)
 			n, err = r.Read(b[n:])
 		} else {
 			n, err = r.Read(b[:])
@@ -122,7 +119,9 @@ func readLoop(r io.Reader, f func()) (rs []byte) {
 		}
 
 		rs = b[0:n]
-		fmt.Fprintf(os.Stderr, "resp b: {{ %+v }}, {{ %s }}\n", rs, rs)
+		fmt.Fprintf(os.Stderr, `resp: {{ %+v }}, {{ %s }}
+
+`, rs, rs)
 
 		if IsTheEnd(rs) {
 			break
@@ -134,25 +133,6 @@ func readLoop(r io.Reader, f func()) (rs []byte) {
 		} else {
 			break
 		}
-		// fmt.Println("2222222222")
-
-		// if IsTheEnd(rs) {
-		// 	break
-		// } else if IsTheStart(rs) ||
-		// 	bytes.HasPrefix(rs, []byte(internal.ColorRed)) ||
-		// 	bytes.HasPrefix(rs, []byte(internal.ColorYellow)) ||
-		// 	bytes.HasPrefix(rs, []byte(internal.ColorGreen)) {
-
-		// 	// continue to read if Prompt not direct after PreText or Colored Response
-		// 	if !bytes.HasSuffix(rs, []byte(internal.Prompt)) {
-		// 		fmt.Fprintln(os.Stderr, "Prompt not afterwards!")
-		// 		keepRead = true
-		// 		continue
-		// 	} else {
-		// 		break
-		// 	}
-		// }
-		// // fmt.Println("2222222222")
 	}
 
 	return
