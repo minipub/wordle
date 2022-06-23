@@ -9,6 +9,7 @@ then
 fi
 
 version=$1
-chksum=wordle-bundle_${version}_checksums.txt
+chksum=wordle_${version}_checksums.txt
 
-gh release create ${version} -t ${version} -F - ./wordle-*_${version}_*.tar.gz ./${chksum}
+echo "Please input changes:"
+gh release create ${version} -t ${version} -F - ./wordle_${version}_*.tar.gz ./${chksum}
