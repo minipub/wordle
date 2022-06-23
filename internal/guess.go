@@ -61,7 +61,7 @@ func init() {
 
 func DoPuzzle(rw ReadWriter, f func()) {
 	pWord := RandOneWord(words) // in-plan word
-	fmt.Printf("pWord: %s\n", pWord)
+	// fmt.Printf("pWord: %s\n", pWord)
 	PreWord(rw)
 	i := GuessWord(rw, pWord, f)
 	PostWord(rw, i, pWord, f)

@@ -11,10 +11,30 @@ import (
 	"time"
 
 	"github.com/minipub/wordle/internal"
+	"github.com/spf13/cobra"
 )
 
+var (
+	host string
+	port int
+
+	Cmd = &cobra.Command{
+		Use:   "solver",
+		Short: "Wordle Solver(Cheater)",
+		Run: func(cmd *cobra.Command, args []string) {
+			main()
+		},
+	}
+)
+
+func init() {
+	Cmd.Flags().StringVar(&host, "host", "127.0.0.1", "dial host")
+	Cmd.Flags().IntVar(&port, "port", 8080, "dial port")
+}
+
 func main() {
-	conn, err := net.Dial("tcp", "0.0.0.0:8080")
+	addr := fmt.Sprintf("%s:%d", host, port)
+	conn, err := net.Dial("tcp", addr)
 	if err != nil {
 		os.Exit(1)
 	}

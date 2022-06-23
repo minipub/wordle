@@ -4,11 +4,11 @@ A Command Line Wordle Game.
 
 ## Features
 
-1. `wordle-puzzle` support classic inactive shell mode
+1. `wordle puzzle` support classic inactive shell mode
 
-2. `wordle-puzzle` support C-S mode
+2. `wordle puzzle` support C-S mode
 
-3. `wordle-solver` support solving puzzle automatically
+3. `wordle solver` support solving puzzle automatically
 
 ## Installation
 
@@ -24,16 +24,10 @@ Download the binary from the [releases](https://github.com/minipub/wordle/releas
 
 If you already have the Go1.18 SDK installed, you can use the go tool to install
 
-Install wordle-puzzle:
+Install wordle:
 
 ```
-go install github.com/minipub/wordle/cmd/wordle-puzzle@latest
-```
-
-Install wordle-solver:
-
-```
-go install github.com/minipub/wordle/cmd/wordle-solver@latest
+go install github.com/minipub/wordle@latest
 ```
 
 ## Usage
@@ -44,15 +38,19 @@ go install github.com/minipub/wordle/cmd/wordle-solver@latest
 
 ### Interactive Mode
 
+```
+wordle puzzle
+```
+
 ### C-S Mode
 
-##### Run server
+Run server
 
 ```
-wordle-puzzle
+wordle puzzle --mode 2
 ```
 
-##### Run client
+Run client
 
 You can run any command line tool to connect local tcp port 8080, eg: telnet
 
@@ -60,7 +58,7 @@ You can run any command line tool to connect local tcp port 8080, eg: telnet
 telnet localhost 8080
 ```
 
-If it work well, you will see the following response
+If it works well, you will see the following response
 
 ```
 root@orz ~ $ socat tcp:localhost:8080 -
@@ -78,12 +76,12 @@ input:
 
 ```
 
-##### Run auto solver
+Run auto solver
 
 Sometimes you lost your patience or just get bored with this game, you can call the auto solver to help (cheat)
 
 ```
-wordle-solver 2>/dev/null
+wordle solver 2>/dev/null
 ```
 
 Also, you can redirect Stderr to a file to look the whole analysis
