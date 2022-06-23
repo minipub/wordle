@@ -1,5 +1,5 @@
 // Wordle! Solver
-package main
+package solver
 
 import (
 	"bufio"

@@ -38,15 +38,21 @@ go install github.com/minipub/wordle/cmd/wordle-solver@latest
 
 ## Usage
 
+### Requirements
+
+* iTerm2 or any other terminal that support 256 Colors
+
+### Interactive Mode
+
 ### C-S Mode
 
-Run server
+##### Run server
 
 ```
 wordle-puzzle
 ```
 
-Run client
+##### Run client
 
 You can run any command line tool to connect local tcp port 8080, eg: telnet
 
@@ -72,7 +78,7 @@ input:
 
 ```
 
-Run auto solver
+##### Run auto solver
 
 Sometimes you lost your patience or just get bored with this game, you can call the auto solver to help (cheat)
 

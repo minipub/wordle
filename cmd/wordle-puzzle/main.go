@@ -1,5 +1,5 @@
 // Wordle! Puzzle
-package main
+package puzzle
 
 import (
 	"bufio"
@@ -8,22 +8,46 @@ import (
 	"os"
 
 	"github.com/minipub/wordle/internal"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	// TODO
-	var isBot bool
-	var port = ":8080"
+const (
+	ModeShell = 1 + iota
+	ModeCS
+)
 
+var (
+	mode int
+	port int
+
+	Cmd = &cobra.Command{
+		Use:   "puzzle",
+		Short: "Wordle Puzzle",
+		Run: func(cmd *cobra.Command, args []string) {
+			main()
+		},
+	}
+)
+
+func init() {
+	Cmd.Flags().IntVar(&mode, "mode", 1, `puzzle run mode: 
+1. Interactive shell
+2. C-S or Interactive shell
+`)
+	Cmd.Flags().IntVar(&port, "port", 8080, "listen port")
+}
+
+func main() {
 	var rw internal.ReadWriter
 
-	if !isBot {
+	if mode == ModeCS {
+		addr := fmt.Sprintf(":%d", port)
 
-		ln, err := net.Listen("tcp", port)
+		ln, err := net.Listen("tcp", addr)
 		if err != nil {
 			os.Exit(1)
 		}
-		fmt.Println("Listening on :8080")
+		fmt.Println("Listening on", addr)
 
 		for {
 			conn, err := ln.Accept()
