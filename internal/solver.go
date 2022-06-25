@@ -35,6 +35,10 @@ func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
 	fmt.Fprintf(os.Stderr, "iWord: {{ %+v }}\n", iWord)
 
 	for k, v := range iWord {
+		if v == byte(0) {
+			continue
+		}
+
 		w := string(v)
 
 		switch pos[k] {

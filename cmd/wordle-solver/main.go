@@ -45,7 +45,6 @@ func main() {
 	w := bufio.NewWriterSize(conn, 1)
 
 	var iWord [5]byte // only words
-	copy(iWord[:], "great")
 
 	for {
 		rs := readLoop(r, func() {
@@ -94,14 +93,9 @@ func main() {
 			}
 		}
 
-		// fmt.Printf("pos: %+v\n", pos)
-
 		if bytes.HasSuffix(rs, []byte(internal.Prompt)) {
 			time.Sleep(time.Second)
-			if !internal.IsTheStart(rs) {
-				// solve word from 2nd times
-				iWord = internal.SolveWord(pos, iWord)
-			}
+			iWord = internal.SolveWord(pos, iWord)
 			// print client request
 			fmt.Printf("%s\n", iWord)
 			w.Write(iWord[:])

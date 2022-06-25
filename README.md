@@ -2,6 +2,22 @@
 
 A Command Line Wordle Game.
 
+[What's wordle?](https://en.wikipedia.org/wiki/Wordle)
+
+## How To Play
+
+Players have six attempts to guess a five-letter word
+
+After every attempts, each letter is marked as either Green, Yellow or Red
+
+Green: letter is correct, and in the correct position
+
+Yellow: it's in the answer, but not in the right position
+
+Red: it's not in the answer at all
+
+## Have A Try
+
 ## Features
 
 1. `wordle puzzle` support classic inactive shell mode
