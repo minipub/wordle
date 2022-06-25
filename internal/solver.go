@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"regexp"
@@ -11,19 +12,23 @@ type chars []string
 
 var (
 	// store iWord chars
-	hitLetters    = []string{}
-	appearLetters = []string{}
-	missLetters   = []string{}
+	hitLetters    = chars{}
+	appearLetters = chars{}
+	missLetters   = chars{}
 
-	// store iWord char eg. pos => char
-	hitIpc    = make(map[int]chars)
-	appearIpc = make(map[int]chars)
-	missIpc   = make(map[int]chars)
+	// store iWord map[pos][letter] eg. pos => letter
+	hitIpl    = make(map[int]chars)
+	appearIpl = make(map[int]chars)
+	missIpl   = make(map[int]chars)
 
 	lastWords = words
 	nowWords  = []string{}
 )
 
+type command struct {
+}
+
+// SolveWord Implement a set of command using pipe to filter
 // cat /tmp/words.txt | grep -v "[aplehi]" | grep t | grep n | grep s | grep "^[^t]\w\w[^n][^s]$"
 func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
 	fmt.Fprintf(os.Stderr, "pos: {{ %+v }}\n", pos)
@@ -36,17 +41,17 @@ func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
 		case Hit:
 			if !IsIn(hitLetters, w) {
 				hitLetters = append(hitLetters, w)
-				hitIpc[k] = append(hitIpc[k], w)
+				hitIpl[k] = append(hitIpl[k], w)
 			}
 		case Appear:
 			if !IsIn(appearLetters, w) {
 				appearLetters = append(appearLetters, w)
-				appearIpc[k] = append(appearIpc[k], w)
+				appearIpl[k] = append(appearIpl[k], w)
 			}
 		case Miss:
 			if !IsIn(missLetters, w) {
 				missLetters = append(missLetters, w)
-				missIpc[k] = append(missIpc[k], w)
+				missIpl[k] = append(missIpl[k], w)
 			}
 		}
 	}
@@ -62,12 +67,12 @@ func SolveWord(pos [5]int, iWord [5]byte) (rs [5]byte) {
 	var posPattern string
 
 	for i := 0; i < 5; i++ {
-		if v, ok := hitIpc[i]; ok {
+		if v, ok := hitIpl[i]; ok {
 			posPattern += v[0]
 			continue
 		}
 
-		if v, ok := appearIpc[i]; ok {
+		if v, ok := appearIpl[i]; ok {
 			posPattern += fmt.Sprintf("[^%s]", strings.Join(v, ""))
 			continue
 		}
@@ -164,4 +169,12 @@ func ChooseWord() (w [5]byte) {
 	}
 
 	return
+}
+
+func IsTheStart(b []byte) bool {
+	return bytes.HasPrefix(b, []byte(PreText))
+}
+
+func IsTheEnd(b []byte) bool {
+	return bytes.HasSuffix(b, []byte(ByeText))
 }

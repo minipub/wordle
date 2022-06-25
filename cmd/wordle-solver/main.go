@@ -15,8 +15,9 @@ import (
 )
 
 var (
-	host string
-	port int
+	host    string
+	port    int
+	verbose bool
 
 	Cmd = &cobra.Command{
 		Use:   "solver",
@@ -30,6 +31,7 @@ var (
 func init() {
 	Cmd.Flags().StringVar(&host, "host", "127.0.0.1", "dial host")
 	Cmd.Flags().IntVar(&port, "port", 8080, "dial port")
+	Cmd.Flags().BoolVar(&verbose, "v", false, "enable verbose or debug log")
 }
 
 func main() {
@@ -53,12 +55,12 @@ func main() {
 		// print server response
 		fmt.Printf("%s", rs)
 
-		if IsTheEnd(rs) {
+		if internal.IsTheEnd(rs) {
 			break
 		}
 
 		var pos [5]int
-		if !IsTheStart(rs) {
+		if !internal.IsTheStart(rs) {
 			fmt.Fprintf(os.Stderr, `Thinking...
 `)
 			var vs []byte
@@ -96,7 +98,7 @@ func main() {
 
 		if bytes.HasSuffix(rs, []byte(internal.Prompt)) {
 			time.Sleep(time.Second)
-			if !IsTheStart(rs) {
+			if !internal.IsTheStart(rs) {
 				// solve word from 2nd times
 				iWord = internal.SolveWord(pos, iWord)
 			}
@@ -107,14 +109,6 @@ func main() {
 
 	}
 
-}
-
-func IsTheStart(b []byte) bool {
-	return bytes.HasPrefix(b, []byte(internal.PreText))
-}
-
-func IsTheEnd(b []byte) bool {
-	return bytes.HasSuffix(b, []byte(internal.ByeText))
 }
 
 // read next input or the end
@@ -143,7 +137,7 @@ func readLoop(r io.Reader, f func()) (rs []byte) {
 
 `, rs, rs)
 
-		if IsTheEnd(rs) {
+		if internal.IsTheEnd(rs) {
 			break
 		} else if !bytes.HasSuffix(rs, []byte(internal.Prompt)) {
 			// continue to read if Prompt not direct after PreText or Colored Response

@@ -32,7 +32,7 @@ var (
 func init() {
 	Cmd.Flags().IntVar(&mode, "mode", 1, `puzzle run mode: 
 1. Interactive shell
-2. C-S or Interactive shell
+2. C-S
 `)
 	Cmd.Flags().IntVar(&port, "port", 8080, "listen port")
 }
