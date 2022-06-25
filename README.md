@@ -99,9 +99,9 @@ Run auto solver
 Sometimes you lost your patience or just get bored with this game, you can call the auto solver to help (cheat)
 
 ```
-wordle solver 2>/dev/null
+wordle solver
 ```
 
-Also, you can redirect Stderr to a file to look the whole analysis
+Also, you can add option verbose to redirect Stderr to a file, in order to look the whole analysis
 
 Help yourself to input and enjoy the fun!

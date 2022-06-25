@@ -37,6 +37,7 @@ func main() {
 	addr := fmt.Sprintf("%s:%d", host, port)
 	conn, err := net.Dial("tcp", addr)
 	if err != nil {
+		fmt.Fprintln(os.Stderr, "Err:", err)
 		os.Exit(1)
 	}
 
@@ -44,13 +45,14 @@ func main() {
 	w := bufio.NewWriterSize(conn, 1)
 
 	m := internal.NewMessage()
+	p := internal.NewSolverPrinter(verbose)
 
-	var iWord [5]byte // only words
+	var iWord [5]byte // input word
 
 	for {
 		rs := internal.ReadLoop(r, func() {
 			r.Reset(conn)
-		})
+		}, p)
 
 		// print server response
 		fmt.Printf("%s", rs)
@@ -63,8 +65,7 @@ func main() {
 
 		if bytes.HasSuffix(rs, []byte(internal.Prompt)) {
 			time.Sleep(time.Second)
-			// iWord = internal.SolveWord(pos, iWord)
-			iWord = internal.DoPipeCmds(m, pos, iWord, verbose)
+			iWord = internal.DoPipeCmds(m, pos, iWord, verbose, p)
 			// print client request
 			fmt.Printf("%s\n", iWord)
 			w.Write(iWord[:])

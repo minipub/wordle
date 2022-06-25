@@ -105,6 +105,8 @@ func PostWord(rw ReadWriter, i int, pWord [5]byte, f func()) {
 	defer f()
 	if i > -1 {
 		rw.Write(fmt.Sprintf(`
+You Win!
+
 %s
 
 `, CheerWords[i]))

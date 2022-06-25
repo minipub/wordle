@@ -1,17 +1,36 @@
 package internal
 
-import "testing"
+import (
+	"testing"
 
-func TestSillyFilter(t *testing.T) {
-	hitLetters = []string{}
-	appearLetters = []string{"g", "e", "a"}
-	missLetters = []string{"r", "t"}
-	notPattern := "[rt]"
-	posPattern := `^[^g]\w[^e][^a]\w$`
+	"github.com/stretchr/testify/assert"
+)
 
-	sillyFilter(notPattern, posPattern)
+func TestFilter(t *testing.T) {
+	m := message{
+		hitLetters:    chars{"y", "i"},
+		appearLetters: chars{"d", "m"},
+		missLetters:   chars{"c", "a", "v", "e", "r", "s", "o", "u", "p", "b", "n", "g", "w", "f", "t", "l"},
 
-	t.Log("nowWords:")
-	t.Log(nowWords)
-	t.Log(len(nowWords))
+		lastWords: []string{
+			"diddy",
+			"dilly",
+			"dimly",
+			"dizzy",
+			"hilly",
+			"jimmy",
+			"kiddy",
+			"middy",
+			"milky",
+			"mizzy",
+		},
+	}
+
+	notPattern := "[caversoupbngwftl]"
+	posPattern := `^[^d]i[^m]\wy$`
+
+	m.filter(notPattern, posPattern)
+
+	assert.Equal(t, 1, len(m.nowWords))
+	assert.Equal(t, "middy", m.nowWords[0])
 }

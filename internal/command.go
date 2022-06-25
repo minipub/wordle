@@ -69,12 +69,12 @@ func (m *message) filter(notPattern, posPattern string) {
 		// discard those not in hited & appeared letters
 		isExist := true
 
-		for _, v := range m.hitLetters {
-			isExist = isExist && IsIn([]byte(v), []byte(v)[0])
+		for _, l := range m.hitLetters {
+			isExist = isExist && IsIn([]byte(v), []byte(l)[0])
 		}
 
-		for _, v := range m.appearLetters {
-			isExist = isExist && IsIn([]byte(v), []byte(v)[0])
+		for _, l := range m.appearLetters {
+			isExist = isExist && IsIn([]byte(v), []byte(l)[0])
 		}
 
 		if !isExist {
@@ -97,14 +97,14 @@ func (m *message) ChooseWord() (w [5]byte) {
 		layerDownMutexWords[i] = []string{}
 	}
 
-	for _, v := range m.nowWords {
-		vv := make(map[byte][]int)
-		for i, b := range []byte(v) {
-			vv[b] = append(vv[b], i)
+	for _, word := range m.nowWords {
+		v := make(map[byte][]int)
+		for i, b := range []byte(word) {
+			v[b] = append(v[b], i)
 		}
 
-		mcnt := len(vv)
-		layerDownMutexWords[mcnt] = append(layerDownMutexWords[mcnt], v)
+		mcnt := len(v)
+		layerDownMutexWords[mcnt] = append(layerDownMutexWords[mcnt], word)
 	}
 
 	for i := 5; i > 0; i-- {
@@ -122,14 +122,14 @@ type pipeCmd interface {
 	next() pipeCmd
 }
 
-// DoPipeCmds Implements a set of command using pipe to filter
+// DoPipeCmds Implements handling a set of pipe commands to solve word
 // cat /tmp/words.txt | grep -v "[aplehi]" | grep t | grep n | grep s | grep "^[^t]\w\w[^n][^s]$"
-func DoPipeCmds(m *message, pos [5]int, iWord [5]byte, verbose bool) [5]byte {
+func DoPipeCmds(m *message, pos [5]int, iWord [5]byte, verbose bool, p Writer) [5]byte {
 	m.Input(pos, iWord)
 
 	cc := &cmdConf{
 		verbose,
-		NewSolverPrinter(verbose),
+		p,
 	}
 
 	for pc := NewMacroCmd(cc); pc.execute(m); {
@@ -143,7 +143,7 @@ func DoPipeCmds(m *message, pos [5]int, iWord [5]byte, verbose bool) [5]byte {
 
 type cmdConf struct {
 	verbose bool
-	*SolverPrinter
+	Writer
 }
 
 // the begin of the pipe commands
