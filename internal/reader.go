@@ -18,24 +18,3 @@ func (s *StdReader) Read(b []byte) (n int, err error) {
 	defer s.f()
 	return
 }
-
-// func read(r io.Reader, b []byte) (n int, err error) {
-// 	n, err = r.Read(b[:])
-// 	return
-// }
-
-// type StdReader struct {
-// 	io.Reader
-// }
-
-// func (s *StdReader) Read(b []byte) (n int, err error) {
-// 	return read(s.Reader, b)
-// }
-
-// type BotReader struct {
-// 	io.Reader
-// }
-
-// func (s *BotReader) Read(b []byte) (n int, err error) {
-// 	return read(s.Reader, b)
-// }

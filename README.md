@@ -8,13 +8,15 @@ A Command Line Wordle Game.
 
 Players have six attempts to guess a five-letter word
 
-After every attempts, each letter is marked as either Green, Yellow or Red
+After every attempt, each letter is marked as either Green, Yellow or Red
 
 Green: letter is correct, and in the correct position
 
 Yellow: it's in the answer, but not in the right position
 
 Red: it's not in the answer at all
+
+**Reference from wiki**
 
 ## Have A Try
 

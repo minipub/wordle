@@ -66,8 +66,9 @@ func main() {
 		}
 	} else {
 		r := bufio.NewReaderSize(os.Stdin, 5)
-		rw = internal.NewStdReadWriter(r, func() { r.Reset(os.Stdin) })
-		internal.DoPuzzle(rw, func() {})
+		w := bufio.NewWriter(os.Stdout)
+		rw = internal.NewBotReadWriter(r, w, func() { r.Reset(os.Stdin) })
+		internal.DoPuzzle(rw, func() { w.Flush() })
 	}
 
 }

@@ -9,6 +9,12 @@ type Writer interface {
 	Write(string)
 }
 
+type NoopWriter struct {
+}
+
+func (*NoopWriter) Write(s string) {
+}
+
 type StdWriter struct {
 }
 
