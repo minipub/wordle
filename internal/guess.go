@@ -21,6 +21,7 @@ const (
 	ColorResetByteNum = len(ColorReset)
 
 	Prompt = "input: "
+	RetERR = "Error: "
 
 	ByeText = "Bye!"
 
@@ -75,7 +76,7 @@ func GuessWord(rw ReadWriter, pWord [5]byte, f func()) (cnt int) {
 		f()
 		iWord, err := HandleInput(rw) // inputted word
 		if err != nil {
-			rw.Write(fmt.Sprintf("Error: %+v\n", err))
+			rw.Write(fmt.Sprintf("%s%+v\n", RetERR, err))
 			continue
 		}
 

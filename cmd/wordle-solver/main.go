@@ -61,6 +61,11 @@ func main() {
 			break
 		}
 
+		if internal.IsRetError(rs) {
+			fmt.Fprintln(os.Stderr, "\nPlease upgrade server version to the latest.")
+			os.Exit(3)
+		}
+
 		pos := internal.CalcPosition(rs)
 
 		if bytes.HasSuffix(rs, []byte(internal.Prompt)) {

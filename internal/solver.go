@@ -11,6 +11,10 @@ func IsTheStart(b []byte) bool {
 	return bytes.HasPrefix(b, []byte(PreText))
 }
 
+func IsRetError(b []byte) bool {
+	return bytes.HasPrefix(b, []byte(RetERR))
+}
+
 func IsTheEnd(b []byte) bool {
 	return bytes.HasSuffix(b, []byte(ByeText))
 }
