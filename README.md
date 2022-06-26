@@ -76,21 +76,7 @@ telnet localhost 8080
 
 If it works well, you will see the following response
 
-```
-root@orz ~ $ socat tcp:localhost:8080 -
-
- _       __               ____        __
-| |     / /___  _________/ / /__     / /
-| | /| / / __ \/ ___/ __  / / _ \   / /
-| |/ |/ / /_/ / /  / /_/ / /  __/  /_/
-|__/|__/\____/_/   \__,_/_/\___/  (_)
-
-
-Please input a five-letter word and Press <Enter> to confirm.
-
-input:
-
-```
+![alt text](https://github.com/minipub/wordle/blob/master/screenshot.png?raw=true)
 
 Run auto solver
 
