@@ -18,8 +18,6 @@ Red: it's not in the answer at all
 
 **Reference from wiki**
 
-## Have A Try
-
 ## Features
 
 1. `wordle puzzle` support classic inactive shell mode
