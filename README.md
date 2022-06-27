@@ -10,21 +10,21 @@ Players have six attempts to guess a five-letter word
 
 After every attempt, each letter is marked as either Green, Yellow or Red
 
-Green: letter is correct, and in the correct position
+🟩 Green: letter is correct, and in the correct position
 
-Yellow: it's in the answer, but not in the right position
+🟨 Yellow: it's in the answer, but not in the right position
 
-Red: it's not in the answer at all
+🟥 Red: it's not in the answer at all
 
 **Reference from wiki**
 
 ## Features
 
-1. `wordle puzzle` support classic inactive shell mode
+1. `wordle puzzle` support classic inactive shell mode 📺
 
-2. `wordle puzzle` support C-S mode
+2. `wordle puzzle` support C-S mode 👨‍💻
 
-3. `wordle solver` support solving puzzle automatically
+3. `wordle solver` support solving puzzle automatically 🤖️
 
 ## Installation
 
@@ -80,7 +80,7 @@ If it works well, you will see the following response
 
 Run auto solver
 
-Sometimes you lost your patience or just get bored with this game, you can call the auto solver to help (cheat)
+Sometimes you lost your patience or just get bored with this game, you can call the auto solver to help (cheat) 😉
 
 ```
 wordle solver
