@@ -27,10 +27,10 @@ type BotReadWriter struct {
 	*BotWriter
 }
 
-func NewBotReadWriter(r io.Reader, w io.Writer, f func()) BotReadWriter {
+func NewBotReadWriter(r io.Reader, w io.Writer, rf, wf func()) BotReadWriter {
 	return BotReadWriter{
-		&StdReader{r, f},
-		&BotWriter{w},
+		&StdReader{r, rf},
+		&BotWriter{w, wf},
 	}
 }
 
@@ -42,7 +42,7 @@ func NewSolverPrinter(verbose bool) *SolverPrinter {
 	var w Writer
 	if verbose {
 		// redirect to Stderr (it looks strange to print to Stdout)
-		w = &BotWriter{os.Stderr}
+		w = &BotWriter{os.Stderr, func() {}}
 	} else {
 		w = &NoopWriter{}
 	}

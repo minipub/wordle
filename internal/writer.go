@@ -24,14 +24,16 @@ func (*StdWriter) Write(s string) {
 
 type BotWriter struct {
 	w io.Writer
+	f func()
 }
 
-func NewBotWriter(w io.Writer) BotWriter {
-	return BotWriter{
-		w,
-	}
-}
+// func NewBotWriter(w io.Writer) BotWriter {
+// 	return BotWriter{
+// 		w,
+// 	}
+// }
 
 func (b *BotWriter) Write(s string) {
 	b.w.Write([]byte(s))
+	b.f()
 }

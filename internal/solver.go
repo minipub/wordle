@@ -20,27 +20,25 @@ func IsTheEnd(b []byte) bool {
 }
 
 // read next input or the end
-func ReadLoop(r io.Reader, f func(), p Writer) (rs []byte) {
-	var keepRead bool
+func ReadLoop(r io.Reader, p Writer) (rs []byte) {
 	var n int
 	var err error
 	var b [512]byte
 
-	defer f()
+	var rbuf []byte
+	bbuf := bytes.NewBuffer(rbuf)
 
 	for {
-		if keepRead {
-			// fmt.Fprintf(os.Stderr, "keepRead: %t\n", keepRead)
-			n, err = r.Read(b[n:])
-		} else {
-			n, err = r.Read(b[:])
-		}
+		n, err = r.Read(b[:])
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Err:", err)
 			os.Exit(2)
 		}
 
-		rs = b[0:n]
+		seg := b[0:n]
+		bbuf.Write(seg)
+		rs = bbuf.Bytes()
+
 		p.Write(fmt.Sprintf(`resp: {{ %+v }}, {{ %s }}
 
 `, rs, rs))
@@ -50,7 +48,6 @@ func ReadLoop(r io.Reader, f func(), p Writer) (rs []byte) {
 		} else if !bytes.HasSuffix(rs, []byte(Prompt)) {
 			// continue to read if Prompt not direct after PreText or Colored Response
 			p.Write(fmt.Sprintln("Prompt not afterwards!"))
-			keepRead = true
 			continue
 		} else {
 			break

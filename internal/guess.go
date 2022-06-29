@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"io"
 )
 
 const (
@@ -60,22 +61,28 @@ func init() {
 	}
 }
 
-func DoPuzzle(rw ReadWriter, f func()) {
+func DoPuzzle(rw ReadWriter) {
 	pWord := RandOneWord(words) // in-plan word
 	// fmt.Printf("pWord: %s\n", pWord)
 	PreWord(rw)
-	i := GuessWord(rw, pWord, f)
-	PostWord(rw, i, pWord, f)
+	end, i := GuessWord(rw, pWord)
+	if end {
+		return
+	}
+	PostWord(rw, i, pWord)
 }
 
-func GuessWord(rw ReadWriter, pWord [5]byte, f func()) (cnt int) {
+func GuessWord(rw ReadWriter, pWord [5]byte) (end bool, cnt int) {
 	cnt = -1
 	for i := 0; i < len(CheerWords); {
 		// handle different writer
 		rw.Write(Prompt)
-		f()
+
 		iWord, err := HandleInput(rw) // inputted word
-		if err != nil {
+		if err == io.EOF {
+			end = true
+			return
+		} else if err != nil {
 			rw.Write(fmt.Sprintf("%s%+v\n", RetERR, err))
 			continue
 		}
@@ -102,8 +109,7 @@ func PreWord(rw ReadWriter) {
 	rw.Write(PreText)
 }
 
-func PostWord(rw ReadWriter, i int, pWord [5]byte, f func()) {
-	defer f()
+func PostWord(rw ReadWriter, i int, pWord [5]byte) {
 	if i > -1 {
 		rw.Write(fmt.Sprintf(`
 You Win!
@@ -151,7 +157,7 @@ func HandleInput(rw ReadWriter) (rs [5]byte, err error) {
 		} else if v >= 'a' && v <= 'z' {
 			rs[k] = v
 		} else {
-			err = errors.New("letters must be between a-zA-z")
+			err = errors.New("letters must be between a-zA-Z")
 			return
 		}
 	}

@@ -41,8 +41,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	r := bufio.NewReaderSize(conn, 1)
-	w := bufio.NewWriterSize(conn, 1)
+	r := bufio.NewReader(conn)
+	w := bufio.NewWriter(conn)
+
+	rr := internal.NewStdReader(r, func() { r.Reset(conn) })
 
 	m := internal.NewMessage()
 	p := internal.NewSolverPrinter(verbose)
@@ -50,9 +52,7 @@ func main() {
 	var iWord [5]byte // input word
 
 	for {
-		rs := internal.ReadLoop(r, func() {
-			r.Reset(conn)
-		}, p)
+		rs := internal.ReadLoop(rr, p)
 
 		// print server response
 		fmt.Printf("%s", rs)
@@ -74,6 +74,7 @@ func main() {
 			// print client request
 			fmt.Printf("%s\n", iWord)
 			w.Write(iWord[:])
+			w.Flush()
 		}
 
 	}
