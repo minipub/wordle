@@ -29,8 +29,8 @@ var (
 
 func init() {
 	Cmd.Flags().StringVar(&host, "host", "127.0.0.1", "dial host")
-	Cmd.Flags().IntVar(&port, "port", 8080, "dial port")
-	Cmd.Flags().BoolVar(&verbose, "v", false, "enable verbose or debug log")
+	Cmd.Flags().IntVarP(&port, "port", "p", 8080, "dial port")
+	Cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose or debug log")
 }
 
 func main() {

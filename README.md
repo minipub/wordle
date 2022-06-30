@@ -63,7 +63,7 @@ wordle puzzle
 Run server
 
 ```
-wordle puzzle --mode 2
+wordle puzzle -m 2
 ```
 
 Run client

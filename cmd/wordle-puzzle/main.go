@@ -30,11 +30,11 @@ var (
 )
 
 func init() {
-	Cmd.Flags().IntVar(&mode, "mode", 1, `puzzle run mode: 
+	Cmd.Flags().IntVarP(&mode, "mode", "m", 1, `puzzle run mode: 
 1. Interactive shell
 2. C-S
 `)
-	Cmd.Flags().IntVar(&port, "port", 8080, "listen port")
+	Cmd.Flags().IntVarP(&port, "port", "p", 8080, "listen port")
 }
 
 func main() {
@@ -45,6 +45,7 @@ func main() {
 
 		ln, err := net.Listen("tcp", addr)
 		if err != nil {
+			fmt.Fprintln(os.Stderr, "Err:", err)
 			os.Exit(1)
 		}
 		fmt.Println("Listening on", addr)
