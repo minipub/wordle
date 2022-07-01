@@ -14,6 +14,7 @@ import (
 )
 
 var (
+	help    bool
 	host    string
 	port    int
 	verbose bool
@@ -28,7 +29,8 @@ var (
 )
 
 func init() {
-	Cmd.Flags().StringVar(&host, "host", "127.0.0.1", "dial host")
+	Cmd.Flags().BoolVarP(&help, "help", "", false, "help for wordle solver")
+	Cmd.Flags().StringVarP(&host, "host", "h", "127.0.0.1", "dial host")
 	Cmd.Flags().IntVarP(&port, "port", "p", 8080, "dial port")
 	Cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose or debug log")
 }

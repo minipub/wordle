@@ -11,6 +11,7 @@ import (
 )
 
 var (
+	help    bool
 	version bool
 	root    cobra.Command
 )
@@ -23,7 +24,7 @@ func main() {
 				fmt.Println("Wordle version:", "v0.1.5")
 				os.Exit(0)
 			}
-			help()
+			printHelp()
 			os.Exit(0)
 		},
 	}
@@ -33,11 +34,12 @@ func main() {
 		solver.Cmd,
 	)
 
+	root.Flags().BoolVarP(&help, "help", "", false, "help for wordle")
 	root.Flags().BoolVarP(&version, "version", "V", false, "Wordle version")
 
 	root.Execute()
 }
 
-func help() {
+func printHelp() {
 	root.Help()
 }

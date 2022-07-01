@@ -17,6 +17,7 @@ const (
 )
 
 var (
+	help bool
 	mode int
 	port int
 
@@ -30,6 +31,7 @@ var (
 )
 
 func init() {
+	Cmd.Flags().BoolVarP(&help, "help", "", false, "help for wordle puzzle")
 	Cmd.Flags().IntVarP(&mode, "mode", "m", 1, `puzzle run mode: 
 1. Interactive shell
 2. C-S
