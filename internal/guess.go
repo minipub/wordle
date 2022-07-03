@@ -139,6 +139,12 @@ func HandleInput(rw ReadWriter) (rs [5]byte, err error) {
 
 	// fmt.Printf("b read: %+v\n", b[:])
 
+	// client cancel Signal, eg: Ctrl+C, should be dealt with by server
+	if b[0] == 255 {
+		err = io.EOF
+		return
+	}
+
 	if isCRLF(b[n-1]) {
 		err = errors.New("no enough letters")
 		return
