@@ -21,7 +21,7 @@ func main() {
 		Use: "wordle",
 		Run: func(cmd *cobra.Command, args []string) {
 			if version {
-				fmt.Println("Wordle version:", "v0.1.7")
+				fmt.Println("Wordle version:", "v0.2.0")
 				os.Exit(0)
 			}
 			printHelp()
