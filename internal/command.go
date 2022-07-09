@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -90,26 +91,42 @@ func (m *message) filter(notPattern, posPattern string) {
 }
 
 // choose word
+// Horizontal order: make chars inside word more mutually exclusive
+// Vertical order: choose word which those chars occur more possibly
 func (m *message) ChooseWord() (w [5]byte) {
-	// layer step down internal mutually exclusive
-	layerDownMutexWords := make(map[int][]string)
+	horders := make(map[int][]string)
 	for i := 1; i <= 5; i++ {
-		layerDownMutexWords[i] = []string{}
+		horders[i] = []string{}
 	}
+
+	// alphabet occur count
+	var showCnts [26]int
 
 	for _, word := range m.nowWords {
 		v := make(map[byte][]int)
+
 		for i, b := range []byte(word) {
 			v[b] = append(v[b], i)
+			showCnts[b-'a'] += 1
 		}
 
 		mcnt := len(v)
-		layerDownMutexWords[mcnt] = append(layerDownMutexWords[mcnt], word)
+		horders[mcnt] = append(horders[mcnt], word)
 	}
 
+	// descend
+	sort.SliceStable(showCnts[:], func(i, j int) bool { return i > j })
+
+	// for i := 5; i > 0; i-- {
+	// 	if len(horders[i]) > 0 {
+	// 		for _, w := range horders[i] {
+	// 		}
+	// 	}
+	// }
+
 	for i := 5; i > 0; i-- {
-		if len(layerDownMutexWords[i]) > 0 {
-			w = RandOneWord(layerDownMutexWords[i])
+		if len(horders[i]) > 0 {
+			w = RandOneWord(horders[i])
 			return
 		}
 	}

@@ -12995,6 +12995,10 @@ func RandOneWord(ws []string) (rs [5]byte) {
 	return rs
 }
 
+func decrWordRange() {
+
+}
+
 func isWord(s string) (yes bool) {
 	return IsIn(words, s)
 }
