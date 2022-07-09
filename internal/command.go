@@ -2,8 +2,10 @@ package internal
 
 import (
 	"fmt"
+	"math"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -100,7 +102,7 @@ func (m *message) ChooseWord() (w [5]byte) {
 	}
 
 	// alphabet occur count
-	var showCnts [26]int
+	var showCnts [26]int64
 
 	for _, word := range m.nowWords {
 		v := make(map[byte][]int)
@@ -115,19 +117,68 @@ func (m *message) ChooseWord() (w [5]byte) {
 	}
 
 	// descend
-	sort.SliceStable(showCnts[:], func(i, j int) bool { return i > j })
+	sort.SliceStable(showCnts[:], func(i, j int) bool { return showCnts[i] > showCnts[j] })
 
-	// for i := 5; i > 0; i-- {
-	// 	if len(horders[i]) > 0 {
-	// 		for _, w := range horders[i] {
-	// 		}
-	// 	}
-	// }
+	// number of digits
+	digitNum := len(strconv.Itoa(len(words) * 5))
+	// power base
+	powBase := NewXBigInt(int64(math.Pow(10, float64(digitNum-1))))
+
+	vorders := make(map[int][]string)
+	for i := 1; i <= 5; i++ {
+		vorders[i] = []string{}
+	}
+
+	rankWord := make(map[string]string)
 
 	for i := 5; i > 0; i-- {
 		if len(horders[i]) > 0 {
-			w = RandOneWord(horders[i])
-			return
+			var topV []*Int
+
+			for _, w := range horders[i] {
+				var t [5]int64
+
+				for k, v := range w {
+					t[k] = showCnts[byte(v)-'a']
+				}
+
+				sort.SliceStable(t[:], func(i, j int) bool { return t[i] < t[j] })
+
+				total := NewXBigInt(0)
+
+				var j int64
+				for j = 0; j < int64(len(t)); j++ {
+					y := Mul(NewXBigInt(t[j]), Pow(powBase, NewXBigInt(j)))
+					total.Add(y)
+				}
+
+				topV = append(topV, total)
+				rankWord[fmt.Sprint(total)] = w
+			}
+
+			sort.SliceStable(topV, func(i, j int) bool { return topV[i].Gt(topV[j]) })
+
+			for _, v := range topV {
+				vorders[i] = append(vorders[i], rankWord[fmt.Sprint(v)])
+			}
+		}
+	}
+
+	if true {
+		for i := 5; i > 0; i-- {
+			if len(vorders[i]) > 0 {
+				for k, v := range vorders[i][0] {
+					w[k] = byte(v)
+				}
+				return
+			}
+		}
+	} else {
+		for i := 5; i > 0; i-- {
+			if len(horders[i]) > 0 {
+				w = RandOneWord(horders[i])
+				return
+			}
 		}
 	}
 
