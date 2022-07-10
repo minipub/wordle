@@ -129,6 +129,7 @@ func (m *message) ChooseWord() (w [5]byte) {
 		vorders[i] = []string{}
 	}
 
+	var maxDistanceIdxs [6]int
 	rankWord := make(map[string][]string)
 
 	for i := 5; i > 0; i-- {
@@ -158,27 +159,29 @@ func (m *message) ChooseWord() (w [5]byte) {
 
 			sort.SliceStable(topV, func(i, j int) bool { return topV[i].Gt(topV[j]) })
 
-			for _, v := range topV {
+			var distances []*Int
+
+			for k, v := range topV {
 				vorders[i] = append(vorders[i], rankWord[fmt.Sprint(v)]...)
+				if k < len(topV)-1 {
+					distances = append(distances, Sub(topV[k+1], topV[k]))
+				}
 			}
+
+			for m := 1; m < len(distances); m++ {
+				if distances[m].Gt(distances[maxDistanceIdxs[i]]) {
+					maxDistanceIdxs[i] = m
+				}
+			}
+
 		}
 	}
 
-	if true {
-		for i := 5; i > 0; i-- {
-			if len(vorders[i]) > 0 {
-				for k, v := range vorders[i][0] {
-					w[k] = byte(v)
-				}
-				return
-			}
-		}
-	} else {
-		for i := 5; i > 0; i-- {
-			if len(horders[i]) > 0 {
-				w = RandOneWord(horders[i])
-				return
-			}
+	for i := 5; i > 0; i-- {
+		if len(vorders[i]) > 0 {
+			end := maxDistanceIdxs[i] + 1
+			w = RandOneWord(vorders[i][0:end])
+			return
 		}
 	}
 
