@@ -14,9 +14,10 @@ import (
 )
 
 var (
-	help    bool
-	host    string
-	port    int
+	help bool
+	host string
+	port int
+	// step    string
 	verbose bool
 
 	Cmd = &cobra.Command{
@@ -32,6 +33,7 @@ func init() {
 	Cmd.Flags().BoolVarP(&help, "help", "", false, "help for wordle solver")
 	Cmd.Flags().StringVarP(&host, "host", "h", "127.0.0.1", "dial host")
 	Cmd.Flags().IntVarP(&port, "port", "p", 8080, "dial port")
+	// Cmd.Flags().StringVarP(&step, "step", "s", "", "enable single step")
 	Cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose or debug log")
 }
 

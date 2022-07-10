@@ -129,7 +129,7 @@ func (m *message) ChooseWord() (w [5]byte) {
 		vorders[i] = []string{}
 	}
 
-	rankWord := make(map[string]string)
+	rankWord := make(map[string][]string)
 
 	for i := 5; i > 0; i-- {
 		if len(horders[i]) > 0 {
@@ -153,13 +153,13 @@ func (m *message) ChooseWord() (w [5]byte) {
 				}
 
 				topV = append(topV, total)
-				rankWord[fmt.Sprint(total)] = w
+				rankWord[fmt.Sprint(total)] = append(rankWord[fmt.Sprint(total)], w)
 			}
 
 			sort.SliceStable(topV, func(i, j int) bool { return topV[i].Gt(topV[j]) })
 
 			for _, v := range topV {
-				vorders[i] = append(vorders[i], rankWord[fmt.Sprint(v)])
+				vorders[i] = append(vorders[i], rankWord[fmt.Sprint(v)]...)
 			}
 		}
 	}
